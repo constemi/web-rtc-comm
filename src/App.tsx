@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Box, Button, Collapsible, Heading, Layer, Grommet, ResponsiveContext } from 'grommet';
 import { FormClose, Chat } from 'grommet-icons';
-import socket from './socket';
-import { PeerConnection } from './core';
 import { MainWindow, CallWindow, CallModal } from './components';
+import { PeerConnection } from './core';
+
+import socket from './socket';
 
 const theme = {
     global: {
