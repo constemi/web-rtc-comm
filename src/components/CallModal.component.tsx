@@ -15,7 +15,7 @@ interface Config {
 }
 
 export function CallModal({ status, callFrom, startCall, rejectCall }: Props): React.ReactElement {
-    const [show, setShow] = React.useState(true);
+    const [show, setShow] = React.useState(Boolean(status));
 
     const acceptWithVideo = (video: boolean) => {
         const config = { audio: true, video };
