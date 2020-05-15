@@ -1,14 +1,23 @@
-import socket from '../socket';
-
 import { MediaDevice } from './mediaDevice';
 import { Emitter } from './emitter';
+
+import socket from '../socket';
 
 interface Config {
     audio: boolean;
     video: boolean;
 }
 
-const TURN_CONFIG = { iceServers: [{ urls: ['stun:stun.l.google.com:19302'] }] };
+const configuration = {
+    iceServers: [
+        { urls: ['stun:stun.l.google.com:19302'] },
+        {
+            urls: 'turn:numb.viagenie.ca',
+            username: 'digitalwave@protonmail.ch',
+            credential: 'v6zXURZ^0QnN',
+        },
+    ],
+};
 
 export class PeerConnection extends Emitter {
     /**
@@ -21,7 +30,7 @@ export class PeerConnection extends Emitter {
 
     constructor(friendID: string) {
         super();
-        this.connection = new RTCPeerConnection(TURN_CONFIG);
+        this.connection = new RTCPeerConnection(configuration);
         this.connection.onicecandidate = (event: any) =>
             socket.emit('call', {
                 to: this.friendID,
