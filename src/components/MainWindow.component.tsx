@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextInput, Button, Heading } from 'grommet';
+import { Box, TextInput, Button, Heading } from 'grommet';
 import { Video, Phone } from 'grommet-icons';
 
 interface Props {
@@ -25,16 +25,18 @@ export function MainWindow({ startCall, clientId }: Props): React.ReactElement {
     };
 
     return (
-        <div className="container main-window">
+        <Box className="container main-window" animation="zoomIn">
             <Heading level={2}>{`Hi, your id is: ${clientId}`}</Heading>
-            <h4>Get started by calling a friend below</h4>
+            <Heading level={4}>Get started by calling a friend below</Heading>
             <TextInput
                 spellCheck={false}
                 placeholder="Your friend ID"
                 onChange={(event) => setFriendID(event.target.value as string)}
             />
-            <Button icon={<Video />} onClick={callWithVideo(true)} disabled={!friendID} />
-            <Button icon={<Phone />} onClick={callWithVideo(false)} disabled={!friendID} />
-        </div>
+            <Box direction="row">
+                <Button icon={<Video />} onClick={callWithVideo(true)} disabled={!friendID} />
+                <Button icon={<Phone />} onClick={callWithVideo(false)} disabled={!friendID} />
+            </Box>
+        </Box>
     );
 }

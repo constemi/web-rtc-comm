@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Button } from 'grommet';
-import { Video, Volume, FormClose } from 'grommet-icons';
+import { Button, Box } from 'grommet';
+import { Video as Camera, Volume, FormClose } from 'grommet-icons';
 
 interface Config {
     audio: boolean;
@@ -51,14 +51,24 @@ export function CallWindow({ peerSrc, localSrc, config, mediaDevice, status, end
     };
 
     return (
-        <div className={`call-window ${status}`}>
-            <video id="peerVideo" ref={peerVideo} autoPlay />
-            <video id="localVideo" ref={localVideo} autoPlay muted />
-            <div className="video-control">
-                <Button icon={<Video />} disabled={!video} onClick={() => toggleMediaDevice('video')} />
-                <Button icon={<Volume />} disabled={!audio} onClick={() => toggleMediaDevice('audio')} />
+        <Box direction="column" justify="around">
+            <Box responsive wrap direction="row" border={{ color: 'brand', size: 'large' }}>
+                {/*  <video autoPlay muted>
+                    <source key="video" src="https://v2.grommet.io/assets/small.mp4" type="video/mp4" />
+                </video>
+
+                <video className="localVideo" autoPlay muted>
+                    <source key="video" src="https://v2.grommet.io/assets/small.mp4" type="video/mp4" />
+                </video>
+                */}
+                <video id="peerVideo" ref={peerVideo} autoPlay />
+                <video id="localVideo" ref={localVideo} autoPlay muted />
+            </Box>
+            <Box className="video-control" direction="row" justify="end">
+                <Button icon={<Camera />} active={video} onClick={() => toggleMediaDevice('video')} />
+                <Button icon={<Volume />} active={audio} onClick={() => toggleMediaDevice('audio')} />
                 <Button icon={<FormClose />} onClick={() => endCall(true)} />
-            </div>
-        </div>
+            </Box>
+        </Box>
     );
 }

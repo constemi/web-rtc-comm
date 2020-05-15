@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Box, Button, Collapsible, Heading, Layer, Grommet, ResponsiveContext } from 'grommet';
 import { FormClose, Chat } from 'grommet-icons';
-import { MainWindow, CallWindow, CallModal } from './components';
-import { PeerConnection } from './core';
+import { AppBar, MainWindow, CallWindow, CallModal } from './components';
+import { PeerConnection, isEmpty } from './core';
 
 import socket from './socket';
 
@@ -36,20 +36,6 @@ interface Config {
 }
 
 type Connection = PeerConnection | Record<string, any>;
-
-const AppBar = (props: any) => (
-    <Box
-        tag="header"
-        direction="row"
-        align="center"
-        justify="between"
-        background="brand"
-        pad={{ left: 'large', right: 'large', vertical: 'xsmall' }}
-        elevation="small"
-        style={{ zIndex: '1' }}
-        {...props}
-    />
-);
 
 class App extends Component<Props, State> {
     state: State = {
@@ -141,8 +127,9 @@ class App extends Component<Props, State> {
                             </AppBar>
                             <Box background="#151719" direction="row" flex overflow={{ horizontal: 'hidden' }}>
                                 <Box flex align="center" justify="center">
-                                    <MainWindow clientId={clientId} startCall={this.startCall} />
-                                    {Object.keys(this.config).length !== 0 && this.config.constructor === Object && (
+                                    {isEmpty(this.config) ? (
+                                        <MainWindow clientId={clientId} startCall={this.startCall} />
+                                    ) : (
                                         <CallWindow
                                             status={callWindow}
                                             localSrc={localSrc}
