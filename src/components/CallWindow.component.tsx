@@ -61,8 +61,8 @@ export function CallWindow({ peerSrc, localSrc, config, mediaDevice, status, end
                     <source key="video" src="https://v2.grommet.io/assets/small.mp4" type="video/mp4" />
                 </video>
                 */}
-                <video id="peerVideo" ref={peerVideo} autoPlay />
-                <video id="localVideo" ref={localVideo} autoPlay muted />
+                <video id="peerVideo" ref={peerVideo} width="50%" autoPlay />
+                <video id="localVideo" ref={localVideo} width="50%" autoPlay muted />
             </Box>
             <Box className="video-control" direction="row" justify="end">
                 <Button icon={<Camera />} active={video} onClick={() => toggleMediaDevice('video')} />
