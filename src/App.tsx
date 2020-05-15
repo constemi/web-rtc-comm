@@ -58,6 +58,7 @@ class App extends Component<Props, State> {
                 this.setState({ clientId: connect.id });
             })
             .on('request', (request: any) => {
+                console.debug(`call request from ${request.from}`);
                 this.setState({ callModal: 'active', callFrom: request.from });
             })
             .on('call', (data: any) => {
@@ -78,11 +79,9 @@ class App extends Component<Props, State> {
         this.config = config;
         this.connection = new PeerConnection(friendID)
             .on('localStream', (src: any) => {
-                this.setState((prevState: State) => ({
-                    callWindow: 'active',
-                    localSrc: src,
-                    callModal: !isCaller ? '' : prevState.callModal,
-                }));
+                const newState: Partial<State> = { callWindow: 'active', localSrc: src };
+                if (!isCaller) newState.callModal = '';
+                this.setState((prevState) => ({ ...prevState, ...newState }));
             })
             .on('peerStream', (src: any) => this.setState({ peerSrc: src }))
             .start(isCaller, config);
@@ -114,6 +113,7 @@ class App extends Component<Props, State> {
 
     public render(): React.ReactNode {
         const { clientId, callFrom, callModal, callWindow, localSrc, peerSrc, sideBar } = this.state;
+
         return (
             <Grommet full theme={theme} themeMode="dark">
                 <ResponsiveContext.Consumer>

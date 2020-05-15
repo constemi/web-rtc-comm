@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Box, Layer, Heading } from 'grommet';
 import { Video, Phone, FormClose } from 'grommet-icons';
 
@@ -15,24 +15,28 @@ interface Config {
 }
 
 export function CallModal({ status, callFrom, startCall, rejectCall }: Props): React.ReactElement {
-    const [show, setShow] = React.useState(Boolean(status));
+    const [show, setShow] = React.useState(status);
 
     const acceptWithVideo = (video: boolean) => {
         const config = { audio: true, video };
         return () => startCall(false, callFrom, config);
     };
 
+    useEffect(() => {
+        setShow(status);
+    }, [status]);
+
     const rejectAndClose = () => {
         rejectCall();
-        setShow(false);
+        setShow('');
     };
 
     return (
-        <div className={`call-modal ${status}`}>
+        <React.Fragment>
             {show && (
-                <Layer onEsc={() => setShow(false)} onClickOutside={() => setShow(false)}>
+                <Layer onEsc={() => setShow('')} onClickOutside={() => setShow('')}>
                     <Box background="brand" tag="header" justify="end" align="center" direction="row">
-                        <Button icon={<FormClose />} onClick={() => setShow(false)} />
+                        <Button icon={<FormClose />} onClick={() => setShow('')} />
                     </Box>
                     <Box background="#25282c" direction="column" justify="center">
                         <Heading level={3} textAlign="center">{`${callFrom} is calling`}</Heading>
@@ -44,6 +48,6 @@ export function CallModal({ status, callFrom, startCall, rejectCall }: Props): R
                     </Box>
                 </Layer>
             )}
-        </div>
+        </React.Fragment>
     );
 }
