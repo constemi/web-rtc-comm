@@ -24,11 +24,11 @@ export class MediaDevice extends Emitter {
 
         navigator.mediaDevices
             .getUserMedia(constraints)
-            .then((stream) => {
+            .then((stream: MediaStream) => {
                 this.stream = stream;
                 this.emit('stream', stream);
             })
-            .catch((err) => {
+            .catch((err: Error) => {
                 if (err instanceof DOMException) {
                     alert('Cannot open webcam and/or microphone');
                 } else {
@@ -47,7 +47,7 @@ export class MediaDevice extends Emitter {
     toggle(type: string, on: boolean) {
         const len = arguments.length;
         if (this.stream) {
-            this.stream[`get${type}Tracks`]().forEach((track: any) => {
+            this.stream[`get${type}Tracks`]().forEach((track: MediaStreamTrack) => {
                 const state = len === 2 ? on : !track.enabled;
                 track['enabled'] = state;
             });
@@ -60,7 +60,7 @@ export class MediaDevice extends Emitter {
      */
     stop() {
         if (this.stream) {
-            this.stream.getTracks().forEach((track: any) => track.stop());
+            this.stream.getTracks().forEach((track: MediaStreamTrack) => track.stop());
         }
         return this;
     }

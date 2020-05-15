@@ -10,7 +10,7 @@ export const AppBar = (props: any) => (
         background="brand"
         pad={{ left: 'large', right: 'large', vertical: 'xsmall' }}
         elevation="small"
-        style={{ zIndex: '1' }}
+        style={{ zIndex: 1 }}
         {...props}
     />
 );

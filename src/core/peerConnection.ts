@@ -31,12 +31,12 @@ export class PeerConnection extends Emitter {
     constructor(friendID: string) {
         super();
         this.connection = new RTCPeerConnection(configuration);
-        this.connection.onicecandidate = (event: any) =>
+        this.connection.onicecandidate = (event: RTCIceCandidateInit | RTCIceCandidate) =>
             socket.emit('call', {
                 to: this.friendID,
                 candidate: event.candidate,
             });
-        this.connection.ontrack = (event: any) => this.emit('peerStream', event.streams[0]);
+        this.connection.ontrack = (event: RTCTrackEvent) => this.emit('peerStream', event.streams[0]);
         this.mediaDevice = new MediaDevice();
         this.friendID = friendID;
     }

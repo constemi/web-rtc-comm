@@ -52,14 +52,6 @@ export function CallWindow({ peerSrc, localSrc, config, mediaDevice, status, end
     return (
         <Box direction="column" justify="around">
             <Box responsive wrap direction="row" border={{ color: 'brand', size: 'large' }}>
-                {/*  <video autoPlay muted>
-                    <source key="video" src="https://v2.grommet.io/assets/small.mp4" type="video/mp4" />
-                </video>
-
-                <video className="localVideo" autoPlay muted>
-                    <source key="video" src="https://v2.grommet.io/assets/small.mp4" type="video/mp4" />
-                </video>
-                */}
                 <video id="peerVideo" ref={peerVideo} width="50%" autoPlay />
                 <video id="localVideo" ref={localVideo} width="50%" autoPlay muted />
             </Box>
