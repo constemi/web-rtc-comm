@@ -6,7 +6,7 @@ const socket = require('./lib/socket');
 const app = express();
 const server = http.createServer(app);
 
-app.use('/', express.static(`${__dirname}/../src`));
+app.use('/', express.static(`${__dirname}/../public`));
 
 server.listen(config.PORT, () => {
     socket(server);
