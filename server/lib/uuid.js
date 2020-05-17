@@ -20,4 +20,4 @@ module.exports = () => {
         .join('');
     // Return the string
     return uuid;
-}; // JavaScript code to efficiently generate a random UUID per RFC 4122
+};

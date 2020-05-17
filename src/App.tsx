@@ -64,12 +64,8 @@ class App extends Component<Props, State> {
             .on('call', (data: any) => {
                 if (data.sdp) {
                     this.connection.setRemoteDescription(data.sdp);
-                    if (data.sdp.type === 'offer') {
-                        this.connection.createAnswer();
-                    } else {
-                        this.connection.addIceCandidate(data.candidate);
-                    }
-                }
+                    if (data.sdp.type === 'offer') this.connection.createAnswer();
+                } else this.connection.addIceCandidate(data.candidate);
             })
             .on('end', this.endCall.bind(this, false))
             .emit('init');
