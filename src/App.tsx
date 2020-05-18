@@ -46,7 +46,7 @@ class App extends Component<Props, State> {
         callFrom: '',
         localSrc: null,
         peerSrc: null,
-        sideBar: true,
+        sideBar: false,
         messages: [],
     };
 
