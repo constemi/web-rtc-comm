@@ -71,7 +71,7 @@ export class PeerConnection extends Emitter {
         }
         this.mediaDevice.stop();
         this.connection.close();
-        this.connection = null;
+        this.connection = {};
         this.off();
         return this;
     }

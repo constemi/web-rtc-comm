@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Box, Button, Collapsible, Heading, Layer, Grommet, ResponsiveContext } from 'grommet';
 import { FormClose, Chat } from 'grommet-icons';
-import { AppBar, MainWindow, CallWindow, CallModal } from './components';
+import { Box, Button, Collapsible, Heading, Layer, Grommet, ResponsiveContext } from 'grommet';
+import { AppBar, StreamRequest, StreamDisplay, StreamResponse, ChatContainer } from './components';
 import { PeerConnection, isEmpty } from './core';
 
 import socket from './socket';
@@ -28,6 +28,7 @@ interface State {
     localSrc: any;
     peerSrc: any;
     sideBar: boolean;
+    messages: any;
 }
 
 interface Config {
@@ -45,7 +46,8 @@ class App extends Component<Props, State> {
         callFrom: '',
         localSrc: null,
         peerSrc: null,
-        sideBar: false,
+        sideBar: true,
+        messages: [],
     };
 
     public connection: Connection = {};
@@ -80,6 +82,11 @@ class App extends Component<Props, State> {
                 this.setState((prevState) => ({ ...prevState, ...newState }));
             })
             .on('peerStream', (src: any) => this.setState({ peerSrc: src }))
+            .on('chatMessage', (data: any) =>
+                this.setState((prevState) => ({
+                    messages: [...prevState.messages, data],
+                })),
+            )
             .start(isCaller, config);
     };
 
@@ -107,6 +114,11 @@ class App extends Component<Props, State> {
         this.setState((prevState) => ({ sideBar: !prevState.sideBar }));
     };
 
+    private sendMessage = (message: string): void => {
+        console.log(`sendMessage called with arg: ${message}`);
+        if (this.connection instanceof PeerConnection) this.connection.emit('chatMessage', { data: message });
+    };
+
     public render(): React.ReactNode {
         const { clientId, callFrom, callModal, callWindow, localSrc, peerSrc, sideBar } = this.state;
 
@@ -124,18 +136,18 @@ class App extends Component<Props, State> {
                             <Box background="#151719" direction="row" flex overflow={{ horizontal: 'hidden' }}>
                                 <Box flex align="center" justify="center">
                                     {isEmpty(this.config) ? (
-                                        <MainWindow clientId={clientId} startCall={this.startCall} />
+                                        <StreamRequest clientId={clientId} startCall={this.startCall} />
                                     ) : (
-                                        <CallWindow
+                                        <StreamDisplay
                                             status={callWindow}
                                             localSrc={localSrc}
                                             peerSrc={peerSrc}
                                             config={this.config}
-                                            mediaDevice={this.connection.mediaDevice}
                                             endCall={this.endCall}
+                                            mediaDevice={this.connection.mediaDevice}
                                         />
                                     )}
-                                    <CallModal
+                                    <StreamResponse
                                         status={callModal}
                                         startCall={this.startCall}
                                         rejectCall={this.rejectCall}
@@ -145,16 +157,10 @@ class App extends Component<Props, State> {
                                 <React.Fragment>
                                     {!sideBar || size !== 'small' ? (
                                         <Collapsible direction="horizontal" open={sideBar}>
-                                            <Box
-                                                flex
-                                                width="medium"
-                                                background="#25282c"
-                                                elevation="small"
-                                                align="center"
-                                                justify="center"
-                                            >
-                                                sidebar
-                                            </Box>
+                                            <ChatContainer
+                                                messages={this.state.messages}
+                                                sendMessage={this.sendMessage}
+                                            />
                                         </Collapsible>
                                     ) : (
                                         <Layer>
@@ -167,9 +173,10 @@ class App extends Component<Props, State> {
                                             >
                                                 <Button icon={<FormClose />} onClick={this.showSideBar} />
                                             </Box>
-                                            <Box fill background="#25282c" align="center" justify="center">
-                                                sidebar
-                                            </Box>
+                                            <ChatContainer
+                                                messages={this.state.messages}
+                                                sendMessage={this.sendMessage}
+                                            />
                                         </Layer>
                                     )}
                                 </React.Fragment>

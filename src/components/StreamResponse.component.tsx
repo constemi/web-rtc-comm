@@ -14,7 +14,7 @@ interface Config {
     video: boolean;
 }
 
-export function CallModal({ status, callFrom, startCall, rejectCall }: Props): React.ReactElement {
+export function StreamResponse({ status, callFrom, startCall, rejectCall }: Props): React.ReactElement {
     const [show, setShow] = React.useState(status);
 
     const acceptWithVideo = (video: boolean) => {

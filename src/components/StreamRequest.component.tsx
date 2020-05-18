@@ -12,7 +12,7 @@ interface Config {
     video: boolean;
 }
 
-export function MainWindow({ startCall, clientId }: Props): React.ReactElement {
+export function StreamRequest({ startCall, clientId }: Props): React.ReactElement {
     const [friendID, setFriendID] = useState('');
 
     /**

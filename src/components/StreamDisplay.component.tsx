@@ -16,7 +16,7 @@ interface Props {
     endCall: (isStarter: boolean) => void;
 }
 
-export function CallWindow({ peerSrc, localSrc, config, mediaDevice, status, endCall }: Props): React.ReactElement {
+export function StreamDisplay({ peerSrc, localSrc, config, mediaDevice, status, endCall }: Props): React.ReactElement {
     const peerVideo: any = useRef(null);
     const localVideo: any = useRef(null);
     const [video, setVideo] = useState(config.video);
