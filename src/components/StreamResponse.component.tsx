@@ -4,9 +4,9 @@ import { Video, Phone, FormClose } from 'grommet-icons';
 
 interface Props {
     status: string;
-    callFrom: string;
-    startCall: (isCaller: boolean, friendID: string, config: Config) => void;
-    rejectCall: () => void;
+    friendId: string;
+    startStream: (isCaller: boolean, friendID: string, config: Config) => void;
+    rejectStream: () => void;
 }
 
 interface Config {
@@ -14,12 +14,12 @@ interface Config {
     video: boolean;
 }
 
-export function StreamResponse({ status, callFrom, startCall, rejectCall }: Props): React.ReactElement {
+export function StreamResponse({ status, friendId, startStream, rejectStream }: Props): React.ReactElement {
     const [show, setShow] = React.useState(status);
 
     const acceptWithVideo = (video: boolean) => {
         const config = { audio: true, video };
-        return () => startCall(false, callFrom, config);
+        return () => startStream(false, friendId, config);
     };
 
     useEffect(() => {
@@ -27,7 +27,7 @@ export function StreamResponse({ status, callFrom, startCall, rejectCall }: Prop
     }, [status]);
 
     const rejectAndClose = () => {
-        rejectCall();
+        rejectStream();
         setShow('');
     };
 
@@ -39,7 +39,7 @@ export function StreamResponse({ status, callFrom, startCall, rejectCall }: Prop
                         <Button icon={<FormClose />} onClick={() => setShow('')} />
                     </Box>
                     <Box background="#25282c" direction="column" justify="center">
-                        <Heading level={3} textAlign="center">{`${callFrom} is calling`}</Heading>
+                        <Heading level={3} textAlign="center">{`${friendId} is calling`}</Heading>
                         <Box background="#25282c" direction="row" justify="between" pad="medium">
                             <Button icon={<Video />} margin="xsmall" label="Accept" onClick={acceptWithVideo(true)} />
                             <Button icon={<Phone />} margin="xsmall" label="Accept" onClick={acceptWithVideo(false)} />

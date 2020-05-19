@@ -11,12 +11,11 @@ interface Props {
     config: Config;
     peerSrc: object;
     localSrc: object;
-    status: string;
     mediaDevice: any;
-    endCall: (isStarter: boolean) => void;
+    closeStream: (isStarter: boolean) => void;
 }
 
-export function StreamDisplay({ peerSrc, localSrc, config, mediaDevice, status, endCall }: Props): React.ReactElement {
+export function StreamDisplay({ peerSrc, localSrc, config, mediaDevice, closeStream }: Props): React.ReactElement {
     const peerVideo: any = useRef(null);
     const localVideo: any = useRef(null);
     const [video, setVideo] = useState(config.video);
@@ -58,7 +57,7 @@ export function StreamDisplay({ peerSrc, localSrc, config, mediaDevice, status, 
             <Box className="video-control" direction="row" justify="end">
                 <Button icon={<Camera />} active={video} onClick={() => toggleMediaDevice('video')} />
                 <Button icon={<Volume />} active={audio} onClick={() => toggleMediaDevice('audio')} />
-                <Button icon={<FormClose />} onClick={() => endCall(true)} />
+                <Button icon={<FormClose />} onClick={() => closeStream(true)} />
             </Box>
         </Box>
     );

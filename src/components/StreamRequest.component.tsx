@@ -4,7 +4,7 @@ import { Video, Phone } from 'grommet-icons';
 
 interface Props {
     clientId: string;
-    startCall: (isCaller: boolean, friendID: string, config: Config) => void;
+    startStream: (isCaller: boolean, friendID: string, config: Config) => void;
 }
 
 interface Config {
@@ -12,7 +12,7 @@ interface Config {
     video: boolean;
 }
 
-export function StreamRequest({ startCall, clientId }: Props): React.ReactElement {
+export function StreamRequest({ startStream, clientId }: Props): React.ReactElement {
     const [friendID, setFriendID] = useState('');
 
     /**
@@ -21,7 +21,7 @@ export function StreamRequest({ startCall, clientId }: Props): React.ReactElemen
      */
     const callWithVideo = (video: boolean) => {
         const config = { audio: true, video };
-        return () => friendID && startCall(true, friendID, config);
+        return () => friendID && startStream(true, friendID, config);
     };
 
     return (

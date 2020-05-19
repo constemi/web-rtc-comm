@@ -22,9 +22,9 @@ const theme = {
 interface Props {}
 interface State {
     clientId: string;
+    friendId: string;
     callWindow: string;
     callModal: string;
-    callFrom: string;
     localSrc: any;
     peerSrc: any;
     sideBar: boolean;
@@ -41,9 +41,9 @@ type Connection = PeerConnection | Record<string, any>;
 class App extends Component<Props, State> {
     state: State = {
         clientId: '',
+        friendId: '',
         callWindow: '',
         callModal: '',
-        callFrom: '',
         localSrc: null,
         peerSrc: null,
         sideBar: false,
@@ -61,7 +61,7 @@ class App extends Component<Props, State> {
             })
             .on('request', (request: any) => {
                 console.debug(`call request from ${request.from}`);
-                this.setState({ callModal: 'active', callFrom: request.from });
+                this.setState({ callModal: 'active', friendId: request.from });
             })
             .on('call', (data: any) => {
                 if (data.sdp) {
@@ -69,11 +69,11 @@ class App extends Component<Props, State> {
                     if (data.sdp.type === 'offer') this.connection.createAnswer();
                 } else this.connection.addIceCandidate(data.candidate);
             })
-            .on('end', this.endCall.bind(this, false))
+            .on('end', this.closeStream.bind(this, false))
             .emit('init');
     }
 
-    private startCall = (isCaller: boolean, friendID: string, config: Config): void => {
+    private startStream = (isCaller: boolean, friendID: string, config: Config): void => {
         this.config = config;
         this.connection = new PeerConnection(friendID)
             .on('localStream', (src: any) => {
@@ -90,13 +90,12 @@ class App extends Component<Props, State> {
             .start(isCaller, config);
     };
 
-    private rejectCall = (): void => {
-        const { callFrom } = this.state;
-        socket.emit('end', { to: callFrom });
+    private rejectStream = (): void => {
+        socket.emit('end', { to: this.state.friendId });
         this.setState({ callModal: '' });
     };
 
-    private endCall = (isStarter: boolean): void => {
+    private closeStream = (isStarter: boolean): void => {
         if (typeof this.connection.stop === 'function') {
             this.connection.stop(isStarter);
         }
@@ -110,17 +109,20 @@ class App extends Component<Props, State> {
         });
     };
 
+    private sendMessage = (message: string): void => {
+        this.setState((prevState) => ({
+            messages: [...prevState.messages, message],
+        }));
+        if (this.connection instanceof PeerConnection)
+            this.connection.emit('chatMessage', { sent: Date.now(), author: this.state.clientId, message });
+    };
+
     private showSideBar = (): void => {
         this.setState((prevState) => ({ sideBar: !prevState.sideBar }));
     };
 
-    private sendMessage = (message: string): void => {
-        console.log(`sendMessage called with arg: ${message}`);
-        if (this.connection instanceof PeerConnection) this.connection.emit('chatMessage', { data: message });
-    };
-
     public render(): React.ReactNode {
-        const { clientId, callFrom, callModal, callWindow, localSrc, peerSrc, sideBar } = this.state;
+        const { clientId, friendId, callModal, localSrc, peerSrc, sideBar, messages } = this.state;
 
         return (
             <Grommet full theme={theme} themeMode="dark">
@@ -136,35 +138,32 @@ class App extends Component<Props, State> {
                             <Box background="#151719" direction="row" flex overflow={{ horizontal: 'hidden' }}>
                                 <Box flex align="center" justify="center">
                                     {isEmpty(this.config) ? (
-                                        <StreamRequest clientId={clientId} startCall={this.startCall} />
+                                        <StreamRequest clientId={clientId} startStream={this.startStream} />
                                     ) : (
                                         <StreamDisplay
-                                            status={callWindow}
-                                            localSrc={localSrc}
                                             peerSrc={peerSrc}
+                                            localSrc={localSrc}
                                             config={this.config}
-                                            endCall={this.endCall}
+                                            closeStream={this.closeStream}
                                             mediaDevice={this.connection.mediaDevice}
                                         />
                                     )}
                                     <StreamResponse
                                         status={callModal}
-                                        startCall={this.startCall}
-                                        rejectCall={this.rejectCall}
-                                        callFrom={callFrom}
+                                        friendId={friendId}
+                                        startStream={this.startStream}
+                                        rejectStream={this.rejectStream}
                                     />
                                 </Box>
                                 <React.Fragment>
                                     {!sideBar || size !== 'small' ? (
                                         <Collapsible direction="horizontal" open={sideBar}>
-                                            <ChatContainer
-                                                messages={this.state.messages}
-                                                sendMessage={this.sendMessage}
-                                            />
+                                            <ChatContainer messages={messages} sendMessage={this.sendMessage} />
                                         </Collapsible>
                                     ) : (
                                         <Layer>
                                             <Box
+                                                style={{ zIndex: 1 }}
                                                 background="brand"
                                                 tag="header"
                                                 justify="end"
@@ -173,10 +172,7 @@ class App extends Component<Props, State> {
                                             >
                                                 <Button icon={<FormClose />} onClick={this.showSideBar} />
                                             </Box>
-                                            <ChatContainer
-                                                messages={this.state.messages}
-                                                sendMessage={this.sendMessage}
-                                            />
+                                            <ChatContainer messages={messages} sendMessage={this.sendMessage} />
                                         </Layer>
                                     )}
                                 </React.Fragment>
