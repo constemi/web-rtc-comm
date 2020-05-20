@@ -55,9 +55,9 @@ class App extends Component<Props, State> {
 
     public componentDidMount() {
         socket
-            .on('init', (connect: any) => {
-                document.title = `${connect.id} - VideoCall`;
-                this.setState({ clientId: connect.id });
+            .on('init', (connection: any) => {
+                document.title = `${connection.id} - VideoCall`;
+                this.setState({ clientId: connection.id });
             })
             .on('request', (request: any) => {
                 console.debug(`call request from ${request.from}`);
@@ -82,9 +82,9 @@ class App extends Component<Props, State> {
                 this.setState((prevState) => ({ ...prevState, ...newState }));
             })
             .on('peerStream', (src: any) => this.setState({ peerSrc: src }))
-            .on('chatMessage', (data: any) =>
+            .on('chatMessage', (message: any) =>
                 this.setState((prevState) => ({
-                    messages: [...prevState.messages, data],
+                    messages: [...prevState.messages, message],
                 })),
             )
             .start(isCaller, config);
@@ -110,11 +110,8 @@ class App extends Component<Props, State> {
     };
 
     private sendMessage = (message: string): void => {
-        this.setState((prevState) => ({
-            messages: [...prevState.messages, message],
-        }));
         if (this.connection instanceof PeerConnection)
-            this.connection.emit('chatMessage', { sent: Date.now(), author: this.state.clientId, message });
+            this.connection.emit('chatMessage', { sent: Date.now(), author: this.state.clientId, content: message });
     };
 
     private showSideBar = (): void => {
@@ -158,21 +155,29 @@ class App extends Component<Props, State> {
                                 <React.Fragment>
                                     {!sideBar || size !== 'small' ? (
                                         <Collapsible direction="horizontal" open={sideBar}>
-                                            <ChatContainer messages={messages} sendMessage={this.sendMessage} />
+                                            <ChatContainer
+                                                clientId={clientId}
+                                                messages={messages}
+                                                sendMessage={this.sendMessage}
+                                            />
                                         </Collapsible>
                                     ) : (
                                         <Layer>
                                             <Box
-                                                style={{ zIndex: 1 }}
                                                 background="brand"
                                                 tag="header"
                                                 justify="end"
                                                 align="center"
                                                 direction="row"
+                                                style={{ zIndex: 1 }}
                                             >
                                                 <Button icon={<FormClose />} onClick={this.showSideBar} />
                                             </Box>
-                                            <ChatContainer messages={messages} sendMessage={this.sendMessage} />
+                                            <ChatContainer
+                                                clientId={clientId}
+                                                messages={messages}
+                                                sendMessage={this.sendMessage}
+                                            />
                                         </Layer>
                                     )}
                                 </React.Fragment>

@@ -3,13 +3,13 @@ import { Box } from 'grommet';
 import { ChatInput } from './ChatInput.component';
 import { ChatMessage } from './ChatMessage.component';
 
-export function ChatContainer({ messages, sendMessage }: any): React.ReactElement {
+export function ChatContainer({ clientId, messages, sendMessage }: any): React.ReactElement {
     return (
         <Box fill background="#25282c" elevation="small">
             <Box fill direction="column-reverse">
                 <Box flex={false} overflow="auto">
                     {messages.map((message: any, index: number) => (
-                        <ChatMessage key={`message-${index}`} message={message} />
+                        <ChatMessage key={`message-${index}`} clientId={clientId} message={message} />
                     ))}
                 </Box>
             </Box>
