@@ -1,3 +1,6 @@
+// tslint:disable-next-line
+import adapter from 'webrtc-adapter';
+
 import React, { Component } from 'react';
 import { FormClose, Chat } from 'grommet-icons';
 import { Box, Button, Collapsible, Heading, Layer, Grommet, ResponsiveContext } from 'grommet';
