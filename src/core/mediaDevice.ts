@@ -43,7 +43,11 @@ export class MediaDevice extends Emitter {
      * Get media stream by type
      * @param type {String} type - Type of the device
      */
+<<<<<<< HEAD
     getStream(type: string): MediaStreamTrack[] {
+=======
+    getTracksByType(type: string): MediaStreamTrack[] {
+>>>>>>> 9a018be3925073e898a161af2c9a97a013ab461d
         if (this.stream && type === 'Audio') return this.stream.getAudioTracks();
         else if (this.stream && type === 'Video') return this.stream.getVideoTracks();
         else return [];
