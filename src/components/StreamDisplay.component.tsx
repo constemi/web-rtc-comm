@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button, Box } from 'grommet';
 import { Video as Camera, Volume, FormClose } from 'grommet-icons';
+import { MediaDevice } from '../core';
 
 interface Config {
     audio: boolean;
@@ -9,17 +10,17 @@ interface Config {
 
 interface Props {
     config: Config;
-    peerSrc: object;
-    localSrc: object;
-    mediaDevice: any;
+    peerSrc: MediaStream | null;
+    localSrc: MediaStream | null;
+    mediaDevice: MediaDevice;
     closeStream: (isStarter: boolean) => void;
 }
 
 export function StreamDisplay({ peerSrc, localSrc, config, mediaDevice, closeStream }: Props): React.ReactElement {
-    const peerVideo: any = useRef(null);
-    const localVideo: any = useRef(null);
-    const [video, setVideo] = useState(config.video);
-    const [audio, setAudio] = useState(config.audio);
+    const peerVideo = useRef<HTMLVideoElement | null>(null);
+    const localVideo = useRef<HTMLVideoElement | null>(null);
+    const [video, setVideo] = useState<boolean>(config.video);
+    const [audio, setAudio] = useState<boolean>(config.audio);
 
     useEffect(() => {
         if (peerVideo.current && peerSrc) peerVideo.current.srcObject = peerSrc;

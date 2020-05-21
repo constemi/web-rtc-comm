@@ -43,15 +43,10 @@ export class MediaDevice extends Emitter {
      * Get media stream by type
      * @param type {String} type - Type of the device
      */
-    getTracksByType(type: string): MediaStreamTrack[] {
-        switch (type) {
-            case 'Audio':
-                if (this.stream) return this.stream.getAudioTracks();
-            case 'Video':
-                if (this.stream) return this.stream.getVideoTracks();
-            default:
-                return [];
-        }
+    getStream(type: string): MediaStreamTrack[] {
+        if (this.stream && type === 'Audio') return this.stream.getAudioTracks();
+        else if (this.stream && type === 'Video') return this.stream.getVideoTracks();
+        else return [];
     }
 
     /**
@@ -59,11 +54,10 @@ export class MediaDevice extends Emitter {
      * @param {String} type - Type of the device
      * @param {Boolean} [on] - State of the device
      */
-    toggle(type: string, on: boolean) {
-        const len = arguments.length;
-        this.getTracksByType(type).forEach((track: MediaStreamTrack) => {
-            const state = len === 2 ? on : !track.enabled;
-            track['enabled'] = state;
+    toggle(type: string, on?: boolean) {
+        this.getStream(type).forEach((track: MediaStreamTrack) => {
+            if (typeof on === 'boolean') track['enabled'] = on;
+            else track['enabled'] = !track.enabled;
         });
         return this;
     }

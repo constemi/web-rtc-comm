@@ -28,10 +28,10 @@ interface State {
     friendId: string;
     callWindow: string;
     callModal: string;
-    localSrc: any;
-    peerSrc: any;
     sideBar: boolean;
     messages: any;
+    localSrc: MediaStream | null;
+    peerSrc: MediaStream | null;
 }
 
 interface Config {
@@ -79,12 +79,12 @@ class App extends Component<Props, State> {
     private startStream = (isCaller: boolean, friendId: string, config: Config): void => {
         this.config = config;
         this.connection = new PeerConnection(friendId)
-            .on('localStream', (localSrc: any) => {
+            .on('localStream', (localSrc: MediaStream) => {
                 const newState: Partial<State> = { callWindow: 'active', localSrc };
                 if (!isCaller) newState.callModal = '';
                 this.setState((prevState) => ({ ...prevState, ...newState }));
             })
-            .on('peerStream', (peerSrc: any) => this.setState({ peerSrc }))
+            .on('peerStream', (peerSrc: MediaStream) => this.setState({ peerSrc }))
             .on('chatMessage', (message: any) =>
                 this.setState((prevState) => ({
                     messages: [...prevState.messages, message],

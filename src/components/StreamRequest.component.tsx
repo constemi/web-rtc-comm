@@ -13,7 +13,7 @@ interface Config {
 }
 
 export function StreamRequest({ startStream, clientId }: Props): React.ReactElement {
-    const [friendId, setfriendId] = useState('');
+    const [friendId, setfriendId] = useState<string>('');
 
     /**
      * Start the call with or without video

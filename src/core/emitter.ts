@@ -1,5 +1,5 @@
 export class Emitter {
-    public events = {} as any;
+    public events = {} as Record<string, any>;
     emit(event: any, ...args: any[]) {
         if (this.events[event]) {
             this.events[event].forEach((fn: Function) => fn(...args));
