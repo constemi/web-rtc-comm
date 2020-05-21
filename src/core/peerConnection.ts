@@ -22,23 +22,24 @@ const configuration = {
 export class PeerConnection extends Emitter {
     /**
      * Create a PeerConnection.
-     * @param {String} friendID - ID of the friend you want to call.
+     * @param {String} friendId - ID of the friend you want to call.
      */
     connection: any;
     mediaDevice: MediaDevice;
-    friendID: string;
+    friendId: string;
 
-    constructor(friendID: string) {
+    constructor(friendId: string) {
         super();
         this.connection = new RTCPeerConnection(configuration);
+        this.connection.ontrack = (event: RTCTrackEvent) => this.emit('peerStream', event.streams[0]);
         this.connection.onicecandidate = (event: RTCIceCandidateInit | RTCIceCandidate) =>
             socket.emit('call', {
-                to: this.friendID,
+                to: this.friendId,
                 candidate: event.candidate,
             });
-        this.connection.ontrack = (event: RTCTrackEvent) => this.emit('peerStream', event.streams[0]);
+
         this.mediaDevice = new MediaDevice();
-        this.friendID = friendID;
+        this.friendId = friendId;
     }
 
     /**
@@ -53,7 +54,7 @@ export class PeerConnection extends Emitter {
                     this.connection.addTrack(track, stream);
                 });
                 this.emit('localStream', stream);
-                if (isCaller) socket.emit('request', { to: this.friendID });
+                if (isCaller) socket.emit('request', { to: this.friendId });
                 else this.createOffer();
             })
             .start(config);
@@ -67,7 +68,7 @@ export class PeerConnection extends Emitter {
      */
     stop(isStarter: boolean): PeerConnection {
         if (isStarter) {
-            socket.emit('end', { to: this.friendID });
+            socket.emit('end', { to: this.friendId });
         }
         this.mediaDevice.stop();
         this.connection.close();
@@ -94,7 +95,7 @@ export class PeerConnection extends Emitter {
 
     getDescription(desc: string): PeerConnection {
         this.connection.setLocalDescription(desc);
-        socket.emit('call', { to: this.friendID, sdp: desc });
+        socket.emit('call', { to: this.friendId, sdp: desc });
         return this;
     }
 

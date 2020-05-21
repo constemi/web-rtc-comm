@@ -9,7 +9,7 @@ interface Config {
  * Manage all media devices
  */
 export class MediaDevice extends Emitter {
-    public stream: any = undefined;
+    stream: MediaStream | undefined;
     /**
      * Start media devices and send stream
      */
@@ -40,18 +40,31 @@ export class MediaDevice extends Emitter {
     }
 
     /**
+     * Get media stream by type
+     * @param type {String} type - Type of the device
+     */
+    getTracksByType(type: string): MediaStreamTrack[] {
+        switch (type) {
+            case 'Audio':
+                if (this.stream) return this.stream.getAudioTracks();
+            case 'Video':
+                if (this.stream) return this.stream.getVideoTracks();
+            default:
+                return [];
+        }
+    }
+
+    /**
      * Turn on/off a device
      * @param {String} type - Type of the device
      * @param {Boolean} [on] - State of the device
      */
     toggle(type: string, on: boolean) {
         const len = arguments.length;
-        if (this.stream) {
-            this.stream[`get${type}Tracks`]().forEach((track: MediaStreamTrack) => {
-                const state = len === 2 ? on : !track.enabled;
-                track['enabled'] = state;
-            });
-        }
+        this.getTracksByType(type).forEach((track: MediaStreamTrack) => {
+            const state = len === 2 ? on : !track.enabled;
+            track['enabled'] = state;
+        });
         return this;
     }
 

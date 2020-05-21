@@ -4,7 +4,7 @@ import { Video, Phone } from 'grommet-icons';
 
 interface Props {
     clientId: string;
-    startStream: (isCaller: boolean, friendID: string, config: Config) => void;
+    startStream: (isCaller: boolean, friendId: string, config: Config) => void;
 }
 
 interface Config {
@@ -13,7 +13,7 @@ interface Config {
 }
 
 export function StreamRequest({ startStream, clientId }: Props): React.ReactElement {
-    const [friendID, setFriendID] = useState('');
+    const [friendId, setfriendId] = useState('');
 
     /**
      * Start the call with or without video
@@ -21,7 +21,7 @@ export function StreamRequest({ startStream, clientId }: Props): React.ReactElem
      */
     const callWithVideo = (video: boolean) => {
         const config = { audio: true, video };
-        return () => friendID && startStream(true, friendID, config);
+        return () => friendId && startStream(true, friendId, config);
     };
 
     return (
@@ -31,11 +31,11 @@ export function StreamRequest({ startStream, clientId }: Props): React.ReactElem
             <TextInput
                 spellCheck={false}
                 placeholder="Your friend ID"
-                onChange={(event) => setFriendID(event.target.value as string)}
+                onChange={(event) => setfriendId(event.target.value as string)}
             />
             <Box direction="row">
-                <Button icon={<Video />} onClick={callWithVideo(true)} disabled={!friendID} />
-                <Button icon={<Phone />} onClick={callWithVideo(false)} disabled={!friendID} />
+                <Button icon={<Video />} onClick={callWithVideo(true)} disabled={!friendId} />
+                <Button icon={<Phone />} onClick={callWithVideo(false)} disabled={!friendId} />
             </Box>
         </Box>
     );

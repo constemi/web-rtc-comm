@@ -5,7 +5,7 @@ import { Video, Phone, FormClose } from 'grommet-icons';
 interface Props {
     status: string;
     friendId: string;
-    startStream: (isCaller: boolean, friendID: string, config: Config) => void;
+    startStream: (isCaller: boolean, friendId: string, config: Config) => void;
     rejectStream: () => void;
 }
 

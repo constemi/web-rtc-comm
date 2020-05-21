@@ -76,15 +76,15 @@ class App extends Component<Props, State> {
             .emit('init');
     }
 
-    private startStream = (isCaller: boolean, friendID: string, config: Config): void => {
+    private startStream = (isCaller: boolean, friendId: string, config: Config): void => {
         this.config = config;
-        this.connection = new PeerConnection(friendID)
-            .on('localStream', (src: any) => {
-                const newState: Partial<State> = { callWindow: 'active', localSrc: src };
+        this.connection = new PeerConnection(friendId)
+            .on('localStream', (localSrc: any) => {
+                const newState: Partial<State> = { callWindow: 'active', localSrc };
                 if (!isCaller) newState.callModal = '';
                 this.setState((prevState) => ({ ...prevState, ...newState }));
             })
-            .on('peerStream', (src: any) => this.setState({ peerSrc: src }))
+            .on('peerStream', (peerSrc: any) => this.setState({ peerSrc }))
             .on('chatMessage', (message: any) =>
                 this.setState((prevState) => ({
                     messages: [...prevState.messages, message],
