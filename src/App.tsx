@@ -1,13 +1,13 @@
 // tslint:disable-next-line
 import adapter from 'webrtc-adapter';
+import socket from './socket';
 
 import React, { Component } from 'react';
 import { FormClose, Chat } from 'grommet-icons';
 import { Box, Button, Collapsible, Heading, Layer, Grommet, ResponsiveContext } from 'grommet';
 import { AppBar, StreamRequest, StreamDisplay, StreamResponse, ChatContainer } from './components';
 import { PeerConnection, isEmpty } from './core';
-
-import socket from './socket';
+import { Message, Config, Connection } from './core/types';
 
 const theme = {
     global: {
@@ -26,31 +26,24 @@ interface Props {}
 interface State {
     clientId: string;
     friendId: string;
-    callWindow: string;
-    callModal: string;
     sideBar: boolean;
-    messages: any;
-    localSrc: MediaStream | null;
+    callWindow: boolean;
+    callModal: boolean;
+    messages: Message[];
     peerSrc: MediaStream | null;
+    localSrc: MediaStream | null;
 }
-
-interface Config {
-    audio: boolean;
-    video: boolean;
-}
-
-type Connection = PeerConnection | Record<string, any>;
 
 class App extends Component<Props, State> {
     state: State = {
         clientId: '',
         friendId: '',
-        callWindow: '',
-        callModal: '',
-        localSrc: null,
-        peerSrc: null,
-        sideBar: false,
         messages: [],
+        sideBar: false,
+        peerSrc: null,
+        localSrc: null,
+        callModal: false,
+        callWindow: false,
     };
 
     public connection: Connection = {};
@@ -64,7 +57,7 @@ class App extends Component<Props, State> {
             })
             .on('request', (request: any) => {
                 console.debug(`call request from ${request.from}`);
-                this.setState({ callModal: 'active', friendId: request.from });
+                this.setState({ callModal: true, friendId: request.from });
             })
             .on('call', (data: any) => {
                 if (data.sdp) {
@@ -80,12 +73,12 @@ class App extends Component<Props, State> {
         this.config = config;
         this.connection = new PeerConnection(friendId)
             .on('localStream', (localSrc: MediaStream) => {
-                const newState: Partial<State> = { callWindow: 'active', localSrc };
-                if (!isCaller) newState.callModal = '';
+                const newState: Partial<State> = { callWindow: true, localSrc };
+                if (!isCaller) newState.callModal = false;
                 this.setState((prevState) => ({ ...prevState, ...newState }));
             })
             .on('peerStream', (peerSrc: MediaStream) => this.setState({ peerSrc }))
-            .on('chatMessage', (message: any) =>
+            .on('chatMessage', (message: Message) =>
                 this.setState((prevState) => ({
                     messages: [...prevState.messages, message],
                 })),
@@ -95,7 +88,7 @@ class App extends Component<Props, State> {
 
     private rejectStream = (): void => {
         socket.emit('end', { to: this.state.friendId });
-        this.setState({ callModal: '' });
+        this.setState({ callModal: false });
     };
 
     private closeStream = (isStarter: boolean): void => {
@@ -105,10 +98,10 @@ class App extends Component<Props, State> {
         this.connection = {};
         this.config = {};
         this.setState({
-            callWindow: '',
-            callModal: '',
-            localSrc: null,
             peerSrc: null,
+            localSrc: null,
+            callModal: false,
+            callWindow: false,
         });
     };
 

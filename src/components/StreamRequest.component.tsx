@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
 import { Box, TextInput, Button, Heading } from 'grommet';
 import { Video, Phone } from 'grommet-icons';
+import { Config } from '../core/types';
 
 interface Props {
     clientId: string;
     startStream: (isCaller: boolean, friendId: string, config: Config) => void;
-}
-
-interface Config {
-    audio: boolean;
-    video: boolean;
 }
 
 export function StreamRequest({ startStream, clientId }: Props): React.ReactElement {

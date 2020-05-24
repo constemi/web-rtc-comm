@@ -1,7 +1,13 @@
 import React from 'react';
 import { Box, Paragraph } from 'grommet';
+import { Message } from '../core/types';
 
-export function ChatMessage({ message, clientId }: any): React.ReactElement {
+interface Props {
+    message: Message;
+    clientId: string;
+}
+
+export function ChatMessage({ message, clientId }: Props): React.ReactElement {
     const isClient = message.author === clientId ? 'dark-3' : '#151719';
 
     return (

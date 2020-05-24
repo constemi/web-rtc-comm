@@ -3,7 +3,7 @@ import { Button, Box, Layer, Heading } from 'grommet';
 import { Video, Phone, FormClose } from 'grommet-icons';
 
 interface Props {
-    status: string;
+    status: boolean;
     friendId: string;
     startStream: (isCaller: boolean, friendId: string, config: Config) => void;
     rejectStream: () => void;
@@ -28,15 +28,15 @@ export function StreamResponse({ status, friendId, startStream, rejectStream }: 
 
     const rejectAndClose = () => {
         rejectStream();
-        setShow('');
+        setShow(false);
     };
 
     return (
         <React.Fragment>
             {show && (
-                <Layer onEsc={() => setShow('')} onClickOutside={() => setShow('')}>
+                <Layer onEsc={() => setShow(false)} onClickOutside={() => setShow(false)}>
                     <Box background="brand" tag="header" justify="end" align="center" direction="row">
-                        <Button icon={<FormClose />} onClick={() => setShow('')} />
+                        <Button icon={<FormClose />} onClick={() => setShow(false)} />
                     </Box>
                     <Box background="#25282c" direction="column" justify="center">
                         <Heading level={3} textAlign="center">{`${friendId} is calling`}</Heading>

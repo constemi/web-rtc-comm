@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { Button, Box, TextInput, Footer, Keyboard } from 'grommet';
 import { Send } from 'grommet-icons';
 
-export function ChatInput({ sendMessage }: any): React.ReactElement {
+interface Props {
+    sendMessage: (message: string) => void;
+}
+
+export function ChatInput({ sendMessage }: Props): React.ReactElement {
     const [value, setValue] = useState('');
 
     const onSendMessage = () => {

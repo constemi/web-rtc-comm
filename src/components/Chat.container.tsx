@@ -3,7 +3,19 @@ import { Box } from 'grommet';
 import { ChatInput } from './ChatInput.component';
 import { ChatMessage } from './ChatMessage.component';
 
-export function ChatContainer({ clientId, messages, sendMessage }: any): React.ReactElement {
+interface Message {
+    sent: Date;
+    author: string;
+    content: string;
+}
+
+interface Props {
+    clientId: string;
+    messages: Message[];
+    sendMessage: (message: string) => void;
+}
+
+export function ChatContainer({ clientId, messages, sendMessage }: Props): React.ReactElement {
     return (
         <Box fill background="#25282c" elevation="small">
             <Box fill direction="column-reverse">

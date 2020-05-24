@@ -2,11 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Button, Box } from 'grommet';
 import { Video as Camera, Volume, FormClose } from 'grommet-icons';
 import { MediaDevice } from '../core';
-
-interface Config {
-    audio: boolean;
-    video: boolean;
-}
+import { Config } from '../core/types';
 
 interface Props {
     config: Config;
