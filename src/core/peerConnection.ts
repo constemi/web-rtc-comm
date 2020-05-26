@@ -1,12 +1,8 @@
 import { MediaDevice } from './mediaDevice';
 import { Emitter } from './emitter';
+import { Config } from './types';
 
 import socket from '../socket';
-
-interface Config {
-    audio: boolean;
-    video: boolean;
-}
 
 const configuration = {
     iceServers: [
@@ -24,7 +20,7 @@ export class PeerConnection extends Emitter {
      * Create a PeerConnection.
      * @param {String} friendId - ID of the friend you want to call.
      */
-    connection: any;
+    connection: RTCPeerConnection;
     mediaDevice: MediaDevice;
     friendId: string;
 
@@ -32,7 +28,7 @@ export class PeerConnection extends Emitter {
         super();
         this.connection = new RTCPeerConnection(configuration);
         this.connection.ontrack = (event: RTCTrackEvent) => this.emit('peerStream', event.streams[0]);
-        this.connection.onicecandidate = (event: RTCIceCandidateInit | RTCIceCandidate) =>
+        this.connection.onicecandidate = (event: RTCPeerConnectionIceEvent) =>
             socket.emit('call', {
                 to: this.friendId,
                 candidate: event.candidate,
@@ -72,12 +68,12 @@ export class PeerConnection extends Emitter {
         }
         this.mediaDevice.stop();
         this.connection.close();
-        this.connection = {};
+        this.connection = {} as RTCPeerConnection;
         this.off();
         return this;
     }
 
-    createOffer(): PeerConnection {
+    createOffer(): PeerConnection | PromiseLike<PeerConnection> {
         this.connection
             .createOffer()
             .then(this.getDescription.bind(this))
@@ -85,7 +81,7 @@ export class PeerConnection extends Emitter {
         return this;
     }
 
-    createAnswer(): PeerConnection {
+    createAnswer(): PeerConnection | PromiseLike<PeerConnection> {
         this.connection
             .createAnswer()
             .then(this.getDescription.bind(this))
@@ -93,7 +89,7 @@ export class PeerConnection extends Emitter {
         return this;
     }
 
-    getDescription(desc: string): PeerConnection {
+    getDescription(desc: RTCSessionDescriptionInit): PeerConnection {
         this.connection.setLocalDescription(desc);
         socket.emit('call', { to: this.friendId, sdp: desc });
         return this;

@@ -1,17 +1,13 @@
 import React, { useEffect } from 'react';
 import { Button, Box, Layer, Heading } from 'grommet';
 import { Video, Phone, FormClose } from 'grommet-icons';
+import { Config } from '../core/types';
 
 interface Props {
     status: boolean;
     friendId: string;
     startStream: (isCaller: boolean, friendId: string, config: Config) => void;
     rejectStream: () => void;
-}
-
-interface Config {
-    audio: boolean;
-    video: boolean;
 }
 
 export function StreamResponse({ status, friendId, startStream, rejectStream }: Props): React.ReactElement {

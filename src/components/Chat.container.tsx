@@ -2,12 +2,7 @@ import React from 'react';
 import { Box } from 'grommet';
 import { ChatInput } from './ChatInput.component';
 import { ChatMessage } from './ChatMessage.component';
-
-interface Message {
-    sent: Date;
-    author: string;
-    content: string;
-}
+import { Message } from '../core/types';
 
 interface Props {
     clientId: string;
@@ -20,7 +15,7 @@ export function ChatContainer({ clientId, messages, sendMessage }: Props): React
         <Box fill background="#25282c" elevation="small">
             <Box fill direction="column-reverse">
                 <Box flex={false} overflow="auto">
-                    {messages.map((message: any, index: number) => (
+                    {messages.map((message: Message, index: number) => (
                         <ChatMessage key={`message-${index}`} clientId={clientId} message={message} />
                     ))}
                 </Box>
