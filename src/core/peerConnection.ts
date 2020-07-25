@@ -20,6 +20,7 @@ export class PeerConnection extends Emitter {
      * Create a PeerConnection.
      * @param {String} friendId - ID of the friend you want to call.
      */
+    connectionState: RTCPeerConnectionState;
     connection: RTCPeerConnection;
     mediaDevice: MediaDevice;
     friendId: string;
@@ -27,6 +28,7 @@ export class PeerConnection extends Emitter {
     constructor(friendId: string) {
         super();
         this.connection = new RTCPeerConnection(configuration);
+        this.connectionState = this.connection.connectionState;
         this.connection.ontrack = (event: RTCTrackEvent) => this.emit('peerStream', event.streams[0]);
         this.connection.onicecandidate = (event: RTCPeerConnectionIceEvent) =>
             socket.emit('call', {

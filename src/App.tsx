@@ -106,8 +106,10 @@ class App extends Component<Props, State> {
     };
 
     private sendMessage = (message: string): void => {
-        if (this.connection instanceof PeerConnection)
+        console.log('connectionState: ' + this.connection.connectionState);
+        if (this.connection.connectionState === 'connected') {
             this.connection.emit('chatMessage', { sent: Date.now(), author: this.state.clientId, content: message });
+        }
     };
 
     private showSideBar = (): void => {
