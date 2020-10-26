@@ -1,13 +1,14 @@
 // tslint:disable-next-line
 import adapter from 'webrtc-adapter';
-import socket from './socket';
-
+import { hpe } from 'grommet-theme-hpe';
 import React, { Component } from 'react';
 import { FormClose, Chat } from 'grommet-icons';
 import { Box, Button, Collapsible, Heading, Layer, Grommet, ResponsiveContext } from 'grommet';
 import { AppBar, StreamRequest, StreamDisplay, StreamResponse, ChatContainer } from './components';
 import { PeerConnection, isEmpty } from './core';
 import { Message, Config, Connection } from './core/types';
+
+import socket from './socket';
 
 const theme = {
     global: {
@@ -120,7 +121,7 @@ class App extends Component<Props, State> {
         const { clientId, friendId, callModal, localSrc, peerSrc, sideBar, messages } = this.state;
 
         return (
-            <Grommet full theme={theme} themeMode="dark">
+            <Grommet full theme={hpe || theme} themeMode="light">
                 <ResponsiveContext.Consumer>
                     {(size) => (
                         <Box fill>

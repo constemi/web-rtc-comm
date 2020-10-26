@@ -29,7 +29,7 @@ export function StreamRequest({ startStream, clientId }: Props): React.ReactElem
                 placeholder="Your friend ID"
                 onChange={(event) => setfriendId(event.target.value as string)}
             />
-            <Box direction="row">
+            <Box direction="row" pad={{ top: 'small' }}>
                 <Button icon={<Video />} onClick={callWithVideo(true)} disabled={!friendId} />
                 <Button icon={<Phone />} onClick={callWithVideo(false)} disabled={!friendId} />
             </Box>

@@ -11,7 +11,7 @@ export const AppBar: React.FC<Props> = (props): React.ReactElement => (
         direction="row"
         align="center"
         justify="between"
-        background="brand"
+        background="teal"
         pad={{ left: 'large', right: 'large', vertical: 'xsmall' }}
         elevation="small"
         style={{ zIndex: 1 }}
