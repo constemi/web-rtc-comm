@@ -34,9 +34,9 @@ export function StreamResponse({ status, friendId, startStream, rejectStream }: 
                     <Box background="brand" tag="header" justify="end" align="center" direction="row">
                         <Button icon={<FormClose />} onClick={() => setShow(false)} />
                     </Box>
-                    <Box background="#25282c" direction="column" justify="center">
+                    <Box background="#25282c" direction="column" justify="center" pad={{ horizontal: 'medium' }}>
                         <Heading level={3} textAlign="center">{`${friendId} is calling`}</Heading>
-                        <Box background="#25282c" direction="row" justify="between" pad="medium">
+                        <Box background="#25282c" direction="row" justify="between" pad="small">
                             <Button icon={<Video />} margin="xsmall" label="Accept" onClick={acceptWithVideo(true)} />
                             <Button icon={<Phone />} margin="xsmall" label="Accept" onClick={acceptWithVideo(false)} />
                             <Button icon={<FormClose />} margin="xsmall" label="Reject" onClick={rejectAndClose} />
