@@ -60,6 +60,11 @@ class App extends Component<Props, State> {
                 console.debug(`call request from ${request.from}`);
                 this.setState({ callModal: true, friendId: request.from });
             })
+            .on('message', (message: Message) =>
+                this.setState((prevState) => ({
+                    messages: [...prevState.messages, message],
+                })),
+            )
             .on('call', (data: any) => {
                 if (data.sdp) {
                     this.connection.setRemoteDescription(data.sdp);
@@ -79,11 +84,6 @@ class App extends Component<Props, State> {
                 this.setState((prevState) => ({ ...prevState, ...newState }));
             })
             .on('peerStream', (peerSrc: MediaStream) => this.setState({ peerSrc }))
-            .on('chatMessage', (message: Message) =>
-                this.setState((prevState) => ({
-                    messages: [...prevState.messages, message],
-                })),
-            )
             .start(isCaller, config);
     };
 
@@ -107,9 +107,9 @@ class App extends Component<Props, State> {
     };
 
     private sendMessage = (message: string): void => {
-        console.log('connectionState: ' + this.connection.connectionState);
-        if (this.connection.connectionState === 'connected') {
-            this.connection.emit('chatMessage', { sent: Date.now(), author: this.state.clientId, content: message });
+        const { friendId } = this.state;
+        if (friendId) {
+            socket.emit('message', { sent: Date.now(), to: friendId, content: message });
         }
     };
 

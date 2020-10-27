@@ -8,7 +8,7 @@ interface Props {
 }
 
 export function ChatMessage({ message, clientId }: Props): React.ReactElement {
-    const isClient = message.author === clientId ? 'dark-3' : '#151719';
+    const isClient = message.from === clientId ? 'dark-3' : '#151719';
 
     return (
         <Box round="small" background={isClient} margin={{ bottom: 'small', left: 'small', right: 'small' }}>

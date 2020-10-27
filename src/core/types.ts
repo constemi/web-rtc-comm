@@ -2,7 +2,8 @@ import { PeerConnection } from './peerConnection';
 
 export interface Message {
     sent: Date;
-    author: string;
+    to: string;
+    from: string;
     content: string;
 }
 
