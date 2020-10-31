@@ -34,10 +34,12 @@ function initSocket(socket) {
         })
         .on('message', (data) => {
             const receiver = users.get(data.to);
+
             if (receiver) {
                 receiver.emit('message', { ...data, from: id });
             } else {
                 socket.emit('failed');
+                console.log('no receiver for message', data);
             }
         })
         .on('disconnect', () => {
